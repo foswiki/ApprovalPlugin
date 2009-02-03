@@ -113,7 +113,7 @@ __Note__ The examples will only work if the plugin is installed and enabled.
 
 ---++ Notes
 
-   * This plugin should work with groups defined in the transition table, but this is currently *untested*. If you want to use groups, please let us know your findings in Foswiki:Extensions.ApprovalPluginDev.
+   * This plugin should work with groups defined in the transition table, but this is currently *untested*. If you want to use groups, please let us know your findings in Foswiki:Support.ApprovalPlugin.
 
    * The users in the transition table must have permission to change the controlled topic when they approve a state, otherwise TWiki will throw an access control exception. There is a message to the user if this is the case.
 
@@ -130,13 +130,15 @@ __Note__ The examples will only work if the plugin is installed and enabled.
 
 |  Plugin Author(s): | Foswiki:Main.AndrewJones |
 |  Plugin Version: | %$VERSION% |
-|  Copyright: | &copy; 2007 - 2008 Foswiki:Main.AndrewJones |
+|  Copyright: | &copy; 2007 - 2009 Foswiki:Main.AndrewJones |
 |  License: | [[http://www.gnu.org/licenses/gpl.html][GPL (Gnu General Public License)]] |
 |  Change History: | <!-- versions below in reverse order -->&nbsp; |
+|  03 Feb 2009 | Small doc changes; tested on Foswiki |
 |  30 Oct 2008 | Small improvements, better code |
 |  12 Sep 2008 | Initial version |
 |  Dependencies: | %$DEPENDENCIES% |
 |  Plugin Home: | http://foswiki.org/Extensions/ApprovalPlugin |
-|  Feedback: | http://foswiki.org/Extensions/ApprovalPluginDev |
+|  Support: | http://foswiki.org/Support/ApprovalPlugin |
+|  Bugs: | http://foswiki.org/Tasks/ApprovalPlugin |
 
 <!-- Do _not_ attempt to edit this topic; it is auto-generated. Please add comments/questions/remarks to the Dev topic instead. -->
