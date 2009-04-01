@@ -12,12 +12,12 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
-# For licensing info read LICENSE file in the TWiki root.
+# For licensing info read LICENSE file in the Foswiki root.
 
-package TWiki::Plugins::ApprovalPlugin::Approval;
+package Foswiki::Plugins::ApprovalPlugin::Approval;
 
-require TWiki::Plugins::ApprovalPlugin::State;
-require TWiki::Plugins::ApprovalPlugin::Transition;
+require Foswiki::Plugins::ApprovalPlugin::State;
+require Foswiki::Plugins::ApprovalPlugin::Transition;
 
 use strict;
 
@@ -39,8 +39,8 @@ sub new {
     $self->{definitionWeb}   = $definitionWeb;
     $self->{definitionTopic} = $definitionTopic;
     $self->{history}         = $history;
-    $self->{state} = $state;    # TWiki::Plugins::ApprovalPlugin::State Object
-      #$self->{transition} = $transition; # TWiki::Plugins::ApprovalPlugin::Transition Object
+    $self->{state} = $state;    # Foswiki::Plugins::ApprovalPlugin::State Object
+      #$self->{transition} = $transition; # Foswiki::Plugins::ApprovalPlugin::Transition Object
 
     return bless( $self, $class );
 }
@@ -57,7 +57,7 @@ sub create {
     $self->{definitionWeb};
     $self->{definitionTopic};
     $self->{history};
-    $self->{state}      = TWiki::Plugins::ApprovalPlugin::State->create();
+    $self->{state}      = Foswiki::Plugins::ApprovalPlugin::State->create();
     $self->{transition} = {};
     $self->{preference} = {};
 
@@ -68,7 +68,7 @@ sub create {
 sub resetObj {
     my $self = shift;
 
-    #$self->{state} = TWiki::Plugins::ApprovalPlugin::State->create();
+    #$self->{state} = Foswiki::Plugins::ApprovalPlugin::State->create();
     $self->{transition} = {};
 
     # Call others

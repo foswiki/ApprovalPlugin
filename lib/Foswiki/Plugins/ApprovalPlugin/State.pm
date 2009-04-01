@@ -12,9 +12,9 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
-# For licensing info read LICENSE file in the TWiki root.
+# For licensing info read LICENSE file in the Foswiki root.
 
-package TWiki::Plugins::ApprovalPlugin::State;
+package Foswiki::Plugins::ApprovalPlugin::State;
 
 use strict;
 

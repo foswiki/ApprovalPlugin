@@ -1,7 +1,7 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 #
 # Copyright (C) 2007 - 1009 Andrew Jones, andrewjones86@googlemail.com
-# and TWiki Contributors. All Rights Reserved. TWiki Contributors
+# and Foswiki Contributors. All Rights Reserved. Foswiki Contributors
 # are listed in the AUTHORS file in the root of this distribution.
 # NOTE: Please extend that file, not this notice.
 #
@@ -15,14 +15,14 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #
-# For licensing info read LICENSE file in the TWiki root.
+# For licensing info read LICENSE file in the Fosiwki root.
 
-package TWiki::Plugins::ApprovalPlugin;
+package Foswiki::Plugins::ApprovalPlugin;
 
 ## These are required conditionally (i.e. when the plugin needs to do something)
-#use TWiki::Plugins::ApprovalPlugin::Approval;
-#use TWiki::Plugins::ApprovalPlugin::State;
-#use TWiki::Plugins::ApprovalPlugin::Transition;
+#use Foswiki::Plugins::ApprovalPlugin::Approval;
+#use Foswiki::Plugins::ApprovalPlugin::State;
+#use Foswiki::Plugins::ApprovalPlugin::Transition;
 
 use strict;
 
@@ -36,29 +36,22 @@ use vars qw( $VERSION
   $globControlled
   $globObj_approval);
 
-$VERSION = '$Rev$';
-$RELEASE = '';
-$SHORTDESCRIPTION =
+our $VERSION = '$Rev$';
+our $RELEASE = '1.0';
+our $SHORTDESCRIPTION =
 'Defines a set of states for one more or topics, with each state requiring approval by one or more users.';
-$NO_PREFS_IN_TOPIC = 1;
+our $NO_PREFS_IN_TOPIC = 1;
 
-$pluginName = 'ApprovalPlugin';
+our $pluginName = 'ApprovalPlugin';
 
 # =========================
 sub initPlugin {
     my ( $topic, $web, $user, $installWeb ) = @_;
 
-    # check for Plugins.pm versions
-    if ( $TWiki::Plugins::VERSION < 1.026 ) {
-        TWiki::Func::writeWarning(
-            "Version mismatch between $pluginName and Plugins.pm");
-        return 0;
-    }
-
     # handles the 'APPROVAL' tag
-    TWiki::Func::registerTagHandler( 'APPROVAL', \&_handleTag );
+    Foswiki::Func::registerTagHandler( 'APPROVAL', \&_handleTag );
 
-    my $prefApproval = TWiki::Func::getPreferencesValue("APPROVALDEFINITION")
+    my $prefApproval = Foswiki::Func::getPreferencesValue("APPROVALDEFINITION")
       || 0;
     if ($prefApproval) {
         _Debug("$web.$topic is under approval control");
@@ -72,9 +65,9 @@ sub initPlugin {
     }
 
     my ( $defWeb, $defTopic ) =
-      TWiki::Func::normalizeWebTopicName( $web, $prefApproval );
+      Foswiki::Func::normalizeWebTopicName( $web, $prefApproval );
 
-    unless ( TWiki::Func::topicExists( $defWeb, $defTopic ) ) {
+    unless ( Foswiki::Func::topicExists( $defWeb, $defTopic ) ) {
         _Warn("$defWeb.$defTopic does not exist. Called by $web.$topic");
         return 1;
     }
@@ -83,7 +76,7 @@ sub initPlugin {
     _doRequire();
 
     # Set up objects
-    $globObj_approval = TWiki::Plugins::ApprovalPlugin::Approval->create();
+    $globObj_approval = Foswiki::Plugins::ApprovalPlugin::Approval->create();
     $globObj_approval->currentWeb($web);
     $globObj_approval->currentTopic($topic);
     $globObj_approval->definitionWeb($defWeb);
@@ -101,7 +94,7 @@ sub _parseApprovalDef {
     $globObj_approval->resetObj();
 
     # get current state from topic
-    my ( $meta, undef ) = TWiki::Func::readTopic( $globObj_approval->currentWeb,
+    my ( $meta, undef ) = Foswiki::Func::readTopic( $globObj_approval->currentWeb,
         $globObj_approval->currentTopic );
 
     my $approval = $meta->get('APPROVAL');
@@ -118,7 +111,7 @@ sub _parseApprovalDef {
 
     # definition topic
     my ( undef, $text ) =
-      TWiki::Func::readTopic( $globObj_approval->definitionWeb,
+      Foswiki::Func::readTopic( $globObj_approval->definitionWeb,
         $globObj_approval->definitionTopic );
 
     my $inBlock = 0;
@@ -165,7 +158,7 @@ sub _parseApprovalDef {
 
                 my @allowedUsers;
                 foreach ( split( /\s*,\s*/, $allowed ) ) {
-                    my $allowedUser = TWiki::Func::getWikiUserName($_);
+                    my $allowedUser = Foswiki::Func::getWikiUserName($_);
 
                     next unless _userExists($allowedUser);
 
@@ -176,7 +169,7 @@ sub _parseApprovalDef {
                 }
 
                 my $obj_transition =
-                  TWiki::Plugins::ApprovalPlugin::Transition->new( $action,
+                  Foswiki::Plugins::ApprovalPlugin::Transition->new( $action,
                     \@allowedUsers, $next, $notify, $signoff );
                 $globObj_approval->transitionByAction( $action,
                     $obj_transition );
@@ -244,12 +237,12 @@ sub _createTransitionForm {
         && _userInList( $globObj_approval->state->reviewedBy ) );
 
     my ( $web, $topic ) = @_;
-    my $user = TWiki::Func::getWikiName();
+    my $user = Foswiki::Func::getWikiName();
 
     return _Return(
         'You must have CHANGE permission on this topic to change state.', 1 )
       if (
-        !TWiki::Func::checkAccessPermission(
+        !Foswiki::Func::checkAccessPermission(
             'CHANGE', $user, undef, $topic, $web, undef
         )
       );
@@ -278,7 +271,7 @@ sub _createTransitionForm {
     if ( $numberOfActions > 0 ) {
 
         # create most the form
-        my $url = TWiki::Func::getViewUrl( $web, $topic );
+        my $url = Foswiki::Func::getViewUrl( $web, $topic );
 
         my $form =
             "<form id='ApprovalTransition' action='$url' method='post'>"
@@ -292,7 +285,7 @@ sub _createTransitionForm {
               . $transitions[0]->action . "' />"
               . "<input type='submit' value='"
               . $transitions[0]->action
-              . "' class='twikiSubmit' />";
+              . "' class='foswikiSubmit' />";
         }
         else {
 
@@ -308,7 +301,7 @@ sub _createTransitionForm {
             }
 
             $form .= "<select name='APPROVALACTION'>$select</select> "
-              . "<input type='submit' value='Change status' class='twikiSubmit' />";
+              . "<input type='submit' value='Change status' class='foswikiSubmit' />";
         }
         $form .= '</form>';
         return $form;
@@ -317,11 +310,11 @@ sub _createTransitionForm {
 
         # not permitted to change state
         my $logIn = '';
-        my $guest = $TWiki::cfg{DefaultUserWikiName} || 'WikiGuest';
+        my $guest = $Foswiki::cfg{DefaultUserWikiName} || 'WikiGuest';
 
-        #if( TWiki::Func::isGuest() ){
+        #if( Foswiki::Func::isGuest() ){ # didnt seem to work as expected...
         if ( $user eq $guest ) {
-            my $url = TWiki::Func::getScriptUrl( $web, $topic, 'login' );
+            my $url = Fowiki::Func::getScriptUrl( $web, $topic, 'login' );
             $logIn = "You may need to <a href='$url'>log in</a>.";
         }
         return _Return(
@@ -339,7 +332,7 @@ sub beforeCommonTagsHandler {
 
     return unless $globControlled;
 
-    my $query = TWiki::Func::getCgiQuery();
+    my $query = Foswiki::Func::getCgiQuery();
     return unless ($query);
 
     my $qAction;
@@ -385,13 +378,13 @@ sub _changeState {
 
     my ( $qAction, $qState, $web, $topic ) = @_;
 
-    my ( $meta, $text ) = TWiki::Func::readTopic( $web, $topic );
-    my $user         = TWiki::Func::getWikiUserName();
+    my ( $meta, $text ) = Foswiki::Func::readTopic( $web, $topic );
+    my $user         = Foswiki::Func::getWikiUserName();
     my $changedState = 0;
 
     my $notify = $globObj_approval->transitionByAction($qAction)->notify;
     $notify = 0
-      if $TWiki::cfg{Plugins}{$pluginName}{DisableNotify};
+      if $Foswiki::cfg{Plugins}{$pluginName}{DisableNotify};
     my $notifyCc;
 
     # state
@@ -424,12 +417,12 @@ sub _changeState {
         if ($notify) {
             if ( $globObj_approval->state->reviewedBy ) {
                 foreach ( split( /,/, $globObj_approval->state->reviewedBy ) ) {
-                    $notifyCc .= TWiki::Func::wikiToEmail($_) . ', ';
+                    $notifyCc .= Foswiki::Func::wikiToEmail($_) . ', ';
                 }
-                $notifyCc .= TWiki::Func::wikiToEmail($user);
+                $notifyCc .= Foswiki::Func::wikiToEmail($user);
             }
             else {
-                $notifyCc = TWiki::Func::wikiToEmail($user);
+                $notifyCc = Foswiki::Func::wikiToEmail($user);
             }
         }
 
@@ -447,9 +440,9 @@ sub _changeState {
     $meta->put( 'APPROVAL', $saveApproval );
 
     # history
-    my $date       = TWiki::Func::formatTime( time(), undef, 'servertime' );
-    my $mixedAlpha = $TWiki::regex{mixedAlpha};
-    my $fmt        = TWiki::Func::getPreferencesValue("APPROVALHISTORYFORMAT")
+    my $date       = Foswiki::Func::formatTime( time(), undef, 'servertime' );
+    my $mixedAlpha = $Foswiki::regex{mixedAlpha};
+    my $fmt        = Foswiki::Func::getPreferencesValue("APPROVALHISTORYFORMAT")
       || '$n$state -- $date';
     $fmt =~ s/\"//go;
     $fmt =~ s/\$quot/\"/go;
@@ -468,7 +461,7 @@ sub _changeState {
 
     # save
     $CalledByMyself = 1;
-    my $saveError = TWiki::Func::saveTopic(
+    my $saveError = Foswiki::Func::saveTopic(
         $web, $topic, $meta, $text,
         {
             minor   => 1,
@@ -476,8 +469,8 @@ sub _changeState {
         }
     );
     if ($saveError) {
-        my $url = TWiki::Func::oops( $web, $topic, "saveerr", $saveError );
-        TWiki::Func::redirectCgiQuery( undef, $url );
+        my $url = Foswiki::Func::getOopsUrl( $web, $topic, "saveerr", $saveError );
+        Foswiki::Func::redirectCgiQuery( undef, $url );
         return 0;
     }
 
@@ -490,7 +483,7 @@ sub _changeState {
     if ( $notify && $changedState && $globObj_approval->transitions ) {
 
         # load template
-        my $emailOut = TWiki::Func::readTemplate('approvalnotify') || <<'HERE';
+        my $emailOut = Foswiki::Func::readTemplate('approvalnotify') || <<'HERE';
 From: %EMAILFROM%
 To: %EMAILTO%
 Cc: %EMAILCC%
@@ -502,9 +495,9 @@ ERROR: No approvalnotify notification template installed - please inform %WIKIWE
 HERE
 
         my $notifyFrom =
-             $TWiki::cfg{WebMasterEmail}
-          || TWiki::Func::getPreferencesValue('WIKIWEBMASTER')
-          || 'twikiwebmaster@example.com';
+             $Foswiki::cfg{WebMasterEmail}
+          || Foswiki::Func::getPreferencesValue('WIKIWEBMASTER')
+          || 'fosiwkiwebmaster@example.com';
         $emailOut =~ s/%EMAILFROM%/$notifyFrom/go;
 
         my $notifyTo;
@@ -519,7 +512,7 @@ HERE
               )
             {
                 my $allowedUser = $_;
-                my $mainweb     = TWiki::Func::getMainWebname();
+                my $mainweb     = Foswiki::Func::getMainWebname();
                 $allowedUser =~ s/$mainweb\.//g;
 
                 # names of users who can approve the next state
@@ -535,7 +528,7 @@ HERE
                 }
               )
             {
-                my $email = TWiki::Func::wikiToEmail($_);
+                my $email = Foswiki::Func::wikiToEmail($_);
                 $notifyTo .= $email . ', '
                   unless $notifyTo =~ m/$email/;
             }
@@ -550,7 +543,7 @@ HERE
                 )
               )
             {
-                my $email = TWiki::Func::wikiToEmail($_);
+                my $email = Foswiki::Func::wikiToEmail($_);
 
                 # dont email out twice
                 $notifyCc .= ', ' . $email
@@ -576,19 +569,19 @@ HERE
         my $m = $globObj_approval->state->message;
         $emailOut =~ s/%NEXTSTATEMESSAGE%/$m/go;
 
-        my $url = TWiki::Func::getScriptUrl( $web, $topic, 'view' );
+        my $url = Foswiki::Func::getScriptUrl( $web, $topic, 'view' );
         $emailOut =~ s/%TOPICLINK%/$url/go;
 
         $emailOut = _expandVars($emailOut);
 
-        if ( $TWiki::cfg{Plugins}{$pluginName}{DebugNotify} ) {
+        if ( $Foswiki::cfg{Plugins}{$pluginName}{DebugNotify} ) {
 
             # dont send email, just output in debug
             # used for testing
             _Debug( '--- Email Notification ---' . "\n" . $emailOut );
         }
         else {
-            my $mailError = TWiki::Func::sendEmail($emailOut);
+            my $mailError = Foswiki::Func::sendEmail($emailOut);
             if ($mailError) {
                 _Warn($mailError);
             }
@@ -632,7 +625,7 @@ sub _checkEdit {
     _Debug('topic is under control');
 
     if ( !_userInList( $globObj_approval->state->{allowedEdit}, 1 ) ) {
-        throw TWiki::OopsException(
+        throw Foswiki::OopsException(
             'accessdenied',
             def    => 'topic_access',
             web    => $_[2],
@@ -659,29 +652,21 @@ sub _cleanField {
 sub _expandVars {
     my ($text) = @_;
     $text =~ m/%.*%/
-      ? return TWiki::Func::expandCommonVariables($text)
+      ? return Foswiki::Func::expandCommonVariables($text)
       : return $text;
 }
 
 # Pulls in the modules we require. Done conditionally to avoid unnecessary compilation
 sub _doRequire {
-    require TWiki::Plugins::ApprovalPlugin::Approval;
-    require TWiki::Plugins::ApprovalPlugin::State;
-    require TWiki::Plugins::ApprovalPlugin::Transition;
+    require Foswiki::Plugins::ApprovalPlugin::Approval;
+    require Foswiki::Plugins::ApprovalPlugin::State;
+    require Foswiki::Plugins::ApprovalPlugin::Transition;
 }
 
 # =========================
 # is user admin?
 sub _isAdmin {
-    if ( $TWiki::Plugins::VERSION > 1.11 ) {
-
-        # 1.12 and over
-        return TWiki::Func::isAnAdmin();
-    }
-    else {
-        my $user = $TWiki::Plugins::SESSION->{user};
-        return $user->isAdmin();
-    }
+    return Foswiki::Func::isAnAdmin();
 }
 
 # checks if current user is in list
@@ -694,25 +679,19 @@ sub _userInList {
         return 1 if _isAdmin();
     }
 
-    if ( $TWiki::Plugins::VERSION > 1.11 ) {
 
 # loop though list, check if group or user, if group find out if allowed. if user, check if its signed in user. else return 0
-        for ( split( /,/, $list ) ) {
-            if ( TWiki::Func::isGroup($_) ) {
-                $_ =~ s/ //;
-                return 1 if TWiki::Func::isGroupMember($_);
-            }
-            else {
-                my $user = TWiki::Func::getWikiName();
-                return 1 if ( $_ =~ m/$user$/ );
-            }
+    for ( split( /,/, $list ) ) {
+        if ( Foswiki::Func::isGroup($_) ) {
+            $_ =~ s/ //;
+            return 1 if Foswiki::Func::isGroupMember($_);
         }
-        return 0;
+        else {
+            my $user = Foswiki::Func::getWikiName();
+            return 1 if ( $_ =~ m/$user$/ );
+        }
     }
-    else {
-        my $user = $TWiki::Plugins::SESSION->{user};
-        return $user->isInList($list);
-    }
+    return 0;
 }
 
 # checks if current user is in array
@@ -726,12 +705,12 @@ sub _userInArray {
     }
 
     for ( @{$array} ) {
-        if ( TWiki::Func::isGroup($_) ) {
+        if ( Foswiki::Func::isGroup($_) ) {
             $_ =~ s/ //;
-            return 1 if TWiki::Func::isGroupMember($_);
+            return 1 if Foswiki::Func::isGroupMember($_);
         }
         else {
-            my $user = TWiki::Func::getWikiUserName();
+            my $user = Foswiki::Func::getWikiUserName();
             return 1 if ( $_ =~ m/$user$/ );
 
             #return 1 if (  $_ eq $user );
@@ -746,7 +725,7 @@ sub _userExists {
 
     # SMELL: Not very good way to check...
     # could iterate over list of users? - might take a long time...
-    return TWiki::Func::topicExists( undef, $user );
+    return Foswiki::Func::topicExists( undef, $user );
 }
 
 # =========================
@@ -755,7 +734,7 @@ sub _Return {
     my ( $text, $error ) = @_;
 
     my $out = '<span class="ApprovalPluginMessage ';
-    $out .= 'twikiAlert' if $error;
+    $out .= 'foswikiAlert' if $error;
     $out .= '">';
     $out .= " %SYSTEMWEB%.$pluginName - $text";
     $out .= '</span>';
@@ -766,33 +745,33 @@ sub _Return {
 # write to debug.txt
 sub _Debug {
     my $text = shift;
-    my $debug = $TWiki::cfg{Plugins}{$pluginName}{Debug} || 0;
-    TWiki::Func::writeDebug("- TWiki::Plugins::${pluginName}: $text") if $debug;
+    my $debug = $Foswiki::cfg{Plugins}{$pluginName}{Debug} || 0;
+    Foswiki::Func::writeDebug("- Foswiki::Plugins::${pluginName}: $text") if $debug;
 }
 
 # write warning
 sub _Warn {
     my $text = shift;
-    TWiki::Func::writeWarning("- TWiki::Plugins::${pluginName}: $text");
+    Foswiki::Func::writeWarning("- Foswiki::Plugins::${pluginName}: $text");
 }
 
-# logs actions in the standard twiki log
+# logs actions in the standard foswiki log
 sub _Log {
     my ( $text, $web, $topic ) = @_;
 
     _Debug($text);
 
     return
-      ; # SMELL: As this uses an internal twiki function, it is unreliable and therefore disabled
+      ; # SMELL: As this uses an internal foswiki function, it is unreliable and therefore disabled
 
-    my $logAction = $TWiki::cfg{Plugins}{$pluginName}{Log} || 0;
+    my $logAction = $Foswiki::cfg{Plugins}{$pluginName}{Log} || 0;
 
     if ($logAction) {
-        $TWiki::Plugins::SESSION
-          ? $TWiki::Plugins::SESSION->writeLog( "approval", "$web.$topic",
+        $Foswiki::Plugins::SESSION
+          ? $Foswiki::Plugins::SESSION->writeLog( "approval", "$web.$topic",
             $text )
-          : TWiki::Store::writeLog( "approval", "$web.$topic", $text );
-        TWiki::Store::writeLog( "approval", "$web.$topic", $text );
+          : Foswiki::Store::writeLog( "approval", "$web.$topic", $text );
+        Foswiki::Store::writeLog( "approval", "$web.$topic", $text );
     }
 }
 

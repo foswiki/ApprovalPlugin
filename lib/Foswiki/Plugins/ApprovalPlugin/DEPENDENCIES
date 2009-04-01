@@ -2,5 +2,4 @@
 # Example:
 # Time::ParseDate,>=2003.0211,cpan,Required.
 # TWiki::Plugins,>=1.15,perl,TWiki 4.1 release.
-Foswiki::Plugins::TWikiCompatibilityPlugin, >0, perl, Compatibility with TWiki
 
