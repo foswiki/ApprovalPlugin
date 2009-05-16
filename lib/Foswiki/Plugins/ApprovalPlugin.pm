@@ -314,7 +314,7 @@ sub _createTransitionForm {
 
         #if( Foswiki::Func::isGuest() ){ # didnt seem to work as expected...
         if ( $user eq $guest ) {
-            my $url = Fowiki::Func::getScriptUrl( $web, $topic, 'login' );
+            my $url = Foswiki::Func::getScriptUrl( $web, $topic, 'login' );
             $logIn = "You may need to <a href='$url'>log in</a>.";
         }
         return _Return(
