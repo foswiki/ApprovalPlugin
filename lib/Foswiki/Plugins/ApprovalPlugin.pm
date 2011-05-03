@@ -1,6 +1,6 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 #
-# Copyright (C) 2007 - 1009 Andrew Jones, andrewjones86@googlemail.com
+# Copyright (C) 2007 - 2011 Andrew Jones, http://andrew-jones.com
 # and Foswiki Contributors. All Rights Reserved. Foswiki Contributors
 # are listed in the AUTHORS file in the root of this distribution.
 # NOTE: Please extend that file, not this notice.
@@ -37,7 +37,7 @@ use vars qw( $VERSION
   $globObj_approval);
 
 our $VERSION = '$Rev$';
-our $RELEASE = '1.0';
+our $RELEASE = '1.1';
 our $SHORTDESCRIPTION =
 'Defines a set of states for one more or topics, with each state requiring approval by one or more users.';
 our $NO_PREFS_IN_TOPIC = 1;
