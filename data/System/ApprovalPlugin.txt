@@ -134,7 +134,7 @@ __Note__ The examples will only work if the plugin is installed and enabled.
 |  Plugin Release: | %$RELEASE% |
 |  Plugin Version: | %$VERSION% |
 |  Change History: | <!-- versions below in reverse order -->&nbsp; |
-|  03 May 2011 | 1.1: Foswikitask:Item2010 - =configure= settings should be under Extensions, not Plugins |
+|  03 May 2011 | 1.1: Foswikitask:Item2010 - =configure= settings should be under Extensions, not Plugins; Foswikitask:Item9298 - use Func API correctly |
 |  01 Apr 2009 | Foswikitask:Item8082 - Ported to Foswiki and released as 1.0 |
 |  03 Feb 2009 | Foswikitask:Item8056 - Small doc changes; tested on Foswiki/Compat |
 |  30 Oct 2008 | Small improvements, better code |

@@ -26,6 +26,9 @@ package Foswiki::Plugins::ApprovalPlugin;
 
 use strict;
 
+use Foswiki::Func;
+use Error qw( :try );
+
 use vars qw( $VERSION
   $RELEASE
   $SHORTDESCRIPTION
@@ -36,13 +39,13 @@ use vars qw( $VERSION
   $globControlled
   $globObj_approval);
 
-our $VERSION = '$Rev$';
-our $RELEASE = '1.1';
-our $SHORTDESCRIPTION =
+$VERSION = '$Rev$';
+$RELEASE = '1.1';
+$SHORTDESCRIPTION =
 'Defines a set of states for one more or topics, with each state requiring approval by one or more users.';
-our $NO_PREFS_IN_TOPIC = 1;
+$NO_PREFS_IN_TOPIC = 1;
 
-our $pluginName = 'ApprovalPlugin';
+$pluginName = 'ApprovalPlugin';
 
 # =========================
 sub initPlugin {
@@ -461,18 +464,18 @@ sub _changeState {
 
     # save
     $CalledByMyself = 1;
-    my $saveError = Foswiki::Func::saveTopic(
-        $web, $topic, $meta, $text,
-        {
-            minor   => 1,
-            dontlog => 1
-        }
-    );
-    if ($saveError) {
-        my $url = Foswiki::Func::getOopsUrl( $web, $topic, "saveerr", $saveError );
+    try {
+        Foswiki::Func::saveTopic(
+            $web, $topic, $meta, $text,
+            {
+                minor   => 1,
+                dontlog => 1
+            }
+        );
+    } otherwise {
+        my $url = Foswiki::Func::getOopsUrl( $web, $topic, "oopssaveerr" );
         Foswiki::Func::redirectCgiQuery( undef, $url );
-        return 0;
-    }
+    };
 
     # need to parse the approval again here, so we can find out
     # who needs to be notified in the next state.
