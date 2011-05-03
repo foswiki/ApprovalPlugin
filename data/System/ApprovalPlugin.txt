@@ -121,11 +121,6 @@ __Note__ The examples will only work if the plugin is installed and enabled.
 
 %$INSTALL_INSTRUCTIONS%
 
----++ Plugin Files
-
-   | *File:* | *Description:* |
-%$MANIFEST%
-
 ---++ Plugin Info
 
 |  Plugin Author(s): | Foswiki:Main.AndrewJones |
