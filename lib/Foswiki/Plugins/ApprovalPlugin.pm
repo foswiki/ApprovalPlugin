@@ -211,6 +211,10 @@ sub _handleTag {
       unless $globControlled;
 
     my $action = $_[1]->{action} || $_[1]->{_DEFAULT};
+    
+    unless($globObj_approval){
+        return _Return( 'No valid action was found in this tag. Perhaps the definition topic does not exist?', 1 );
+    }
 
     for ($action) {
         /pref/i
