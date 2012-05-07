@@ -97,8 +97,7 @@ sub _parseApprovalDef {
     $globObj_approval->resetObj();
 
     # get current state from topic
-    my ( $meta, undef ) =
-      Foswiki::Func::readTopic( $globObj_approval->currentWeb,
+    my ( $meta, undef ) = Foswiki::Func::readTopic( $globObj_approval->currentWeb,
         $globObj_approval->currentTopic );
 
     my $approval = $meta->get('APPROVAL');
@@ -212,12 +211,9 @@ sub _handleTag {
       unless $globControlled;
 
     my $action = $_[1]->{action} || $_[1]->{_DEFAULT};
-
-    unless ($globObj_approval) {
-        return _Return(
-'No valid action was found in this tag. Perhaps the definition topic does not exist?',
-            1
-        );
+    
+    unless($globObj_approval){
+        return _Return( 'No valid action was found in this tag. Perhaps the definition topic does not exist?', 1 );
     }
 
     for ($action) {
@@ -480,8 +476,7 @@ sub _changeState {
                 dontlog => 1
             }
         );
-    }
-    otherwise {
+    } otherwise {
         my $url = Foswiki::Func::getOopsUrl( $web, $topic, "oopssaveerr" );
         Foswiki::Func::redirectCgiQuery( undef, $url );
     };
@@ -495,8 +490,7 @@ sub _changeState {
     if ( $notify && $changedState && $globObj_approval->transitions ) {
 
         # load template
-        my $emailOut = Foswiki::Func::readTemplate('approvalnotify')
-          || <<'HERE';
+        my $emailOut = Foswiki::Func::readTemplate('approvalnotify') || <<'HERE';
 From: %EMAILFROM%
 To: %EMAILTO%
 Cc: %EMAILCC%
@@ -692,6 +686,7 @@ sub _userInList {
         return 1 if _isAdmin();
     }
 
+
 # loop though list, check if group or user, if group find out if allowed. if user, check if its signed in user. else return 0
     for ( split( /,/, $list ) ) {
         if ( Foswiki::Func::isGroup($_) ) {
@@ -758,8 +753,7 @@ sub _Return {
 sub _Debug {
     my $text = shift;
     my $debug = $Foswiki::cfg{Plugins}{$pluginName}{Debug} || 0;
-    Foswiki::Func::writeDebug("- Foswiki::Plugins::${pluginName}: $text")
-      if $debug;
+    Foswiki::Func::writeDebug("- Foswiki::Plugins::${pluginName}: $text") if $debug;
 }
 
 # write warning
