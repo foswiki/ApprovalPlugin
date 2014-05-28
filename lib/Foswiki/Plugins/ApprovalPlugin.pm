@@ -495,6 +495,7 @@ From: %EMAILFROM%
 To: %EMAILTO%
 Cc: %EMAILCC%
 Subject: %SUBJECT%
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
 Content-Type: text/plain
 
